@@ -1,0 +1,124 @@
+<Page x:Class="Cracker.pgReport"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Cracker"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="1000"
+      Title="Отчет по проекту" Loaded="Page_Loaded">
+
+  <Page.Resources>
+    <local:DateToStrConv x:Key="pgDTSC"/>
+    <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+      <Setter Property="FontSize" Value="16"/>
+      <Setter Property="FontWeight" Value="Bold"/>
+      <Setter Property="Foreground" Value="#4EC9B0"/>
+      <Setter Property="Margin" Value="0,10,0,5"/>
+    </Style>
+  </Page.Resources>
+
+  <Grid Background="#1E1E1E">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <Border Grid.Row="0" Background="#2D2D30" Padding="15" Margin="10">
+      <StackPanel Orientation="Horizontal">
+        <TextBlock Text="Группировка:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#D4D4D4"/>
+        <ComboBox ItemsSource="{Binding GroupingOptions}" 
+                  SelectedItem="{Binding SelectedGrouping}"
+                  DisplayMemberPath="DisplayName"
+                  Width="160" Margin="0,0,20,0"/>
+        
+        <Button Content="Обновить" Command="{Binding LoadReportCommand}" Width="100" Margin="0,0,10,0"/>
+        <Button Content="Экспорт CSV" Command="{Binding ExportCsvCommand}" Width="120" Background="#4EC9B0" Foreground="#1E1E1E"/>
+      </StackPanel>
+    </Border>
+
+    <Border Grid.Row="1" Background="#252526" Padding="15" Margin="10,0,10,10">
+      <StackPanel>
+        <TextBlock Text="Сводка по исполнителям" Style="{StaticResource SectionHeaderStyle}"/>
+        <DataGrid x:Name="grdSummary" 
+                  ItemsSource="{Binding SummaryItems}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  MaxHeight="200"
+                  Background="#2D2D30"
+                  RowBackground="#2D2D30"
+                  AlternatingRowBackground="#252526"
+                  BorderThickness="0">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Исполнитель" Binding="{Binding UserName}" Width="*"/>
+            <DataGridTextColumn Header="Задач" Binding="{Binding TaskCount}" Width="80">
+              <DataGridTextColumn.ElementStyle>
+                <Style TargetType="TextBlock">
+                  <Setter Property="HorizontalAlignment" Value="Center"/>
+                </Style>
+              </DataGridTextColumn.ElementStyle>
+            </DataGridTextColumn>
+            <DataGridTextColumn Header="Завершено" Binding="{Binding CompletedTaskCount}" Width="90">
+              <DataGridTextColumn.ElementStyle>
+                <Style TargetType="TextBlock">
+                  <Setter Property="HorizontalAlignment" Value="Center"/>
+                </Style>
+              </DataGridTextColumn.ElementStyle>
+            </DataGridTextColumn>
+            <DataGridTextColumn Header="Оценка (ч.)" Binding="{Binding TotalEstimatedHours}" Width="90">
+              <DataGridTextColumn.ElementStyle>
+                <Style TargetType="TextBlock">
+                  <Setter Property="HorizontalAlignment" Value="Center"/>
+                </Style>
+              </DataGridTextColumn.ElementStyle>
+            </DataGridTextColumn>
+          </DataGrid.Columns>
+        </DataGrid>
+      </StackPanel>
+    </Border>
+
+    <Border Grid.Row="2" Background="#252526" Padding="15" Margin="10,0,10,10">
+      <DockPanel>
+        <TextBlock Text="Задачи проекта" Style="{StaticResource SectionHeaderStyle}" DockPanel.Dock="Top"/>
+        <DataGrid x:Name="grdTasks" 
+                  ItemsSource="{Binding ReportItems}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  Background="#2D2D30"
+                  RowBackground="#2D2D30"
+                  AlternatingRowBackground="#252526"
+                  BorderThickness="0">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="ID" Binding="{Binding TaskId}" Width="50">
+              <DataGridTextColumn.ElementStyle>
+                <Style TargetType="TextBlock">
+                  <Setter Property="HorizontalAlignment" Value="Center"/>
+                </Style>
+              </DataGridTextColumn.ElementStyle>
+            </DataGridTextColumn>
+            <DataGridTextColumn Header="Задача" Binding="{Binding TaskTitle}" Width="250"/>
+            <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="120"/>
+            <DataGridTextColumn Header="Исполнитель" Binding="{Binding DeveloperName}" Width="150"/>
+            <DataGridTextColumn Header="Дата создания" Binding="{Binding CreatedDate, Converter={StaticResource pgDTSC}, ConverterParameter=date}" Width="110"/>
+            <DataGridTextColumn Header="Оценка (ч.)" Binding="{Binding EstimatedHours}" Width="90">
+              <DataGridTextColumn.ElementStyle>
+                <Style TargetType="TextBlock">
+                  <Setter Property="HorizontalAlignment" Value="Center"/>
+                </Style>
+              </DataGridTextColumn.ElementStyle>
+            </DataGridTextColumn>
+            <DataGridTemplateColumn Header="Срочная" Width="70">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <TextBlock Text="🚨" HorizontalAlignment="Center" Visibility="{Binding IsRush, Converter={StaticResource BoolToVis}}"/>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+          </DataGrid.Columns>
+        </DataGrid>
+      </DockPanel>
+    </Border>
+  </Grid>
+</Page>

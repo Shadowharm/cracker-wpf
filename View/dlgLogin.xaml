@@ -1,0 +1,68 @@
+﻿<Window x:Class="Cracker.dlgLogin"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Cracker"
+        mc:Ignorable="d"
+        Title="Приветствие" Height="350" Width="450" 
+        Style="{StaticResource WindowStyle}"
+        WindowStartupLocation="CenterScreen">
+  <Grid Margin="40">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="30"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="15"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="30"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="Auto"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+
+    <TextBlock Text="Вход в систему" 
+               Grid.Row="0" 
+               Grid.ColumnSpan="2" 
+               FontSize="20" 
+               FontWeight="Bold" 
+               HorizontalAlignment="Center"
+               Margin="0,0,0,20"/>
+    
+    <TextBlock Text="Логин: " 
+               Grid.Row="2" 
+               Grid.Column="0" 
+               VerticalAlignment="Center"
+               Margin="0,0,15,0"/>
+    
+    <TextBlock Text="Пароль: " 
+               Grid.Row="4" 
+               Grid.Column="0" 
+               VerticalAlignment="Center"
+               Margin="0,0,15,0"/>
+
+    <TextBox Name="edLogin" 
+             Grid.Row="2" 
+             Grid.Column="1" 
+             Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"
+             VerticalAlignment="Center" 
+             KeyDown="ButtonDown"/>
+    
+    <PasswordBox Name="edPass" 
+                 Grid.Row="4" 
+                 Grid.Column="1" 
+                 VerticalAlignment="Center" 
+                 KeyDown="ButtonDown"/>
+
+    <StackPanel Orientation="Horizontal" 
+                Grid.Row="6" 
+                Grid.ColumnSpan="2" 
+                HorizontalAlignment="Right"
+                Margin="0,25,0,0">
+      <Button Content="Выход" Width="150" Command="{Binding ExitCommand}" IsCancel="True" Margin="0,0,10,0"/>
+      <Button Content="Войти в систему" Width="150" Click="LoginClick"/>
+    </StackPanel>
+  </Grid>
+</Window>

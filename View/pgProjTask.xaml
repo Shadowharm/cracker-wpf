@@ -1,0 +1,102 @@
+﻿<Page x:Class="Cracker.pgProjTask"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Cracker"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Проекты - задачи" Loaded="Page_Loaded">
+
+  <Page.Resources>
+    <local:DateToStrConv x:Key="pgDSC"/>
+    <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+  </Page.Resources>
+
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="200"/>
+      <ColumnDefinition Width="Auto"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <WrapPanel Name="wpBtn" Grid.Row="0" Grid.ColumnSpan="3" Orientation="Horizontal">
+      <Button Name="btnProj" Content="Проекты" Command="{Binding GoToProjectsCommand}" 
+              Width="100" Visibility="{Binding ProjectsButtonVisibility}"/>
+      <Button Name="btnAdd" Content="➕ Задача" Command="{Binding AddTaskCommand}" 
+              Width="100" Visibility="{Binding AddTaskButtonVisibility}"/>
+      <Button Name="btnReport" Content="📊 Отчет" Command="{Binding OpenReportCommand}" 
+              Width="100" Visibility="{Binding ReportButtonVisibility}"/>
+      <ItemsControl ItemsSource="{Binding StatusFilters}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel Orientation="Horizontal"/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Button Content="{Binding DisplayText}" 
+                    Command="{Binding DataContext.FilterByStatusCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                    CommandParameter="{Binding Status}"
+                    Width="Auto" Margin="3"/>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </WrapPanel>
+
+    <GridSplitter Grid.Column="1" Grid.Row="1"
+                  Width="3"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  ResizeDirection="Columns"
+                  Background="Gray"/>
+
+    <DataGrid x:Name="grdProject" Grid.Row="1" Grid.Column="0" 
+              ItemsSource="{Binding Projects}"
+              SelectedItem="{Binding SelectedProject}">
+      <DataGrid.Columns>
+        <DataGridTextColumn Binding="{Binding name}" Header="Проект" Width="*"/>
+      </DataGrid.Columns>
+    </DataGrid>
+
+    <DataGrid x:Name="grdTasks" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" 
+              EnableRowVirtualization="False" RowHeight="100"
+              ItemsSource="{Binding Tasks}"
+              SelectedItem="{Binding SelectedTask}"
+              MouseDoubleClick="TaskClick">
+      <DataGrid.Columns>
+        <DataGridTemplateColumn Header="Задачи" Width="*">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <StackPanel Orientation="Vertical" VerticalAlignment="Top">
+                <DockPanel LastChildFill="False">
+                  <TextBlock Text="{Binding title}" FontWeight="Bold" DockPanel.Dock="Left"/>
+                  <TextBlock Text="🚨 СРОЧНО" FontWeight="Bold" Foreground="Red" DockPanel.Dock="Right" 
+                             Visibility="{Binding rush, Converter={StaticResource BoolToVis}}"/>
+                </DockPanel>
+                <ScrollViewer Height="44" 
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+                  <TextBlock Text="{Binding note}" TextWrapping="Wrap"/>
+                </ScrollViewer>
+                <DockPanel LastChildFill="False">
+                  <TextBlock Text="{Binding status}" FontWeight="Bold" Foreground="#c98b39" Background="#3a3235" DockPanel.Dock="Left"/>
+                  <TextBlock Text="{Binding leed,StringFormat={}{0:# ч.}}" FontWeight="Bold" DockPanel.Dock="Left"/>
+                  <TextBlock Text="{Binding developer}" Foreground="Gray" DockPanel.Dock="Left"/>
+                  <TextBlock Text="{Binding sprint}" FontStyle="Italic" Background="#293331" DockPanel.Dock="Left"/>
+
+                  <TextBlock Text="{Binding created,Converter={StaticResource pgDSC},ConverterParameter=datetime}" DockPanel.Dock="Right"/>
+                  <TextBlock Text="{Binding manager}" FontWeight="Bold" DockPanel.Dock="Right"/>
+                </DockPanel>
+              </StackPanel>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+      </DataGrid.Columns>
+    </DataGrid>
+  </Grid>
+</Page>

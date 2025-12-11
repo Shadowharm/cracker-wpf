@@ -1,0 +1,94 @@
+﻿<Page x:Class="Cracker.pgTask"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Cracker"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Задача " Loaded="Page_Loaded">
+  <Page.Resources>
+    <local:DateToStrConv x:Key="pgDTSC"/>
+  </Page.Resources>
+
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="140"/>
+      <ColumnDefinition Width="*"/>
+      <ColumnDefinition Width="140"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="35"/>
+      <RowDefinition Height="38"/>
+      <RowDefinition Height="38"/>
+      <RowDefinition Height="38"/>
+      <RowDefinition Height="35"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="36"/>
+    </Grid.RowDefinitions>
+
+    <WrapPanel Grid.Row="3" Grid.Column="3" Grid.RowSpan="2" Orientation="Horizontal">
+      <Button Name="btnSprint" Content="Спринты" Command="{Binding SprintCommand}" 
+              Width="120" Visibility="{Binding SprintButtonVisibility}"/>
+      <Button Name="btnNote" Content="Комментарии" Command="{Binding NoteCommand}" 
+              Width="120" Visibility="{Binding NoteButtonVisibility}"/>
+      <Button Name="btnLog" Content="Логи" Command="{Binding LogCommand}" 
+              Width="120" Visibility="{Binding LogButtonVisibility}"/>
+    </WrapPanel>
+
+    <TextBlock Foreground="#D4D4D4" Grid.Row="0" Grid.Column="0" Text="Название"/>
+    <TextBlock Foreground="#D4D4D4" Grid.Row="1" Grid.Column="0" Text="Менеджер"/>
+    <TextBlock Foreground="#D4D4D4" Grid.Row="1" Grid.Column="2" Text="Разработчик"/>
+    <TextBlock Foreground="#D4D4D4" Grid.Row="2" Grid.Column="0" Text="Статус"/>
+    <TextBlock Foreground="#D4D4D4" Grid.Row="2" Grid.Column="2" Text="Спринт"/>
+    <TextBlock Foreground="#D4D4D4" Grid.Row="3" Grid.Column="0" Text="Время выполнения"/>
+    <TextBlock Foreground="#D4D4D4" Grid.Row="4" Grid.Column="0" Text="Текст"/>
+
+    <TextBox Text="{Binding TaskTitle, UpdateSourceTrigger=PropertyChanged}" 
+             Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Name="edTitle"
+             IsReadOnly="{Binding IsTitleReadOnly}"/>
+
+    <ComboBox Grid.Row="1" Grid.Column="1" Name="cbManager" 
+              IsEnabled="{Binding IsManagerEnabled}"
+              SelectedItem="{Binding Manager}" 
+              ItemsSource="{Binding Managers}"/>
+    <Grid Grid.Row="1" Grid.Column="3">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+      <ComboBox Grid.Column="0" Name="cbDeveloper" 
+                IsEnabled="{Binding IsDeveloperEnabled}"
+                SelectedItem="{Binding Developer}" 
+                ItemsSource="{Binding Developers}"/>
+      <Button Grid.Column="1" Content="Подобрать исполнителя" 
+              Command="{Binding AssignDeveloperCommand}"
+              Visibility="{Binding AssignDeveloperButtonVisibility}"
+              Margin="5,0,0,0" Padding="5,2"/>
+    </Grid>
+    <ComboBox Grid.Row="2" Grid.Column="1" Name="cbStatus" 
+              SelectedItem="{Binding Status}"
+              ItemsSource="{Binding Statuses}"/>
+    <ComboBox Grid.Row="2" Grid.Column="3" Name="cbSprint" 
+              IsEnabled="{Binding IsSprintEnabled}"
+              ItemsSource="{Binding Sprints}"
+              SelectedItem="{Binding Sprint}"/>
+
+    <TextBox Text="{Binding Leed, UpdateSourceTrigger=PropertyChanged}" 
+             Grid.Row="3" Grid.Column="1" Name="edLeed"
+             IsReadOnly="{Binding IsLeedReadOnly}"/>
+    <CheckBox IsChecked="{Binding Rush}" Content="Срочная" 
+              Grid.Row="3" Grid.Column="2" Name="cbRush"
+              IsEnabled="{Binding IsRushEnabled}"/>
+    <TextBox Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" 
+             Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="4" Name="edNote" 
+             AcceptsTab="True" AcceptsReturn="True" VerticalAlignment="Stretch" VerticalContentAlignment="Top"
+             IsReadOnly="{Binding IsNoteReadOnly}"/>
+
+    <StackPanel Grid.Row="6" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Right">
+      <Button Name="btnCancel" Content="Назад" Command="{Binding BackCommand}"/>
+      <Button Name="btnSave" Content="Сохранить" Command="{Binding SaveCommand}"/>
+    </StackPanel>
+  </Grid>
+</Page>
